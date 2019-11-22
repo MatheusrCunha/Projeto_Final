@@ -31,4 +31,10 @@ float imprime_temperatura(dado_t *dados);
 
 char * imprime_tempo(dado_t *dados);
 
+void quick_sort(dado_t **dados, int n_linhas);
+
+int med_tres(dado_t **dados, int esq, int dir);
+
+int particao(dado_t **dados, int esq, int dir);
+
 #endif /* DADOS_H_ */
