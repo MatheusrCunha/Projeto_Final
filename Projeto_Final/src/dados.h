@@ -10,7 +10,6 @@
 
 /* Criação de tipo abstrato dado_t */
 typedef struct dados dado_t;
-
 /**
   * @brief  Cria um novo dado
   * @param  amostra: identificador da amostra
@@ -19,22 +18,35 @@ typedef struct dados dado_t;
   *
   * @retval dado_t: ponteiro para uma novo dado
   */
-dado_t * criar_dado (int amostra, float temperatura, char * tempo);
+dado_t * criar_dado(dado_t *temp);
 
-dado_t ** ler_dados (char *camera_tempcsv, int * n_linhas);
+dado_t **ler_dados(char *dados_METARcsv, int * n_linhas);
 
-void liberar_dados (dado_t **meu_novo_dado, int n_linhas);
+void liberar_dados(dado_t **dados, int n_linhas);
 
-int imprime_amostra(dado_t *dados);
+char * imprime_encontro(dado_t *dados);
 
-float imprime_temperatura(dado_t *dados);
+float imprime_altura_media(dado_t *dados);
 
-char * imprime_tempo(dado_t *dados);
+float imprime_direcao_pico(dado_t *dados);
 
-void quick_sort(dado_t **dados, int n_linhas);
+float imprime_temperatura_mar(dado_t *dados);
+
+void imprime_dados(dado_t **dados);
+
+float imprime_altura_max(dado_t *dados);
+
+float imprime_onda_zero(dado_t *dados);
+
+float imprime_pico_energia(dado_t *dados);
+
+void imprime_dado(dado_t **dados);
+
+void quick_sort(dado_t **dados, int esq, int dir);
 
 int med_tres(dado_t **dados, int esq, int dir);
 
 int particao(dado_t **dados, int esq, int dir);
 
+void swap(dado_t **dados, int i, int j);
 #endif /* DADOS_H_ */

@@ -11,57 +11,57 @@
 #include <string.h>
 #include "dados.h"
 
-struct dados {
-	char tempo[64];     /*!< Time stamp */
-	float temperatura;  /*!< Valor do dado: temperatura */
-	float vento_frio;        /*!< Valor do dado: vento frio*/
-	float indice_calor;
-	float umidade;
-	float pressao;
-	float condensacao_agua;
-	float visibilidade;
-	char vento_direcao[10];
-	float vento_velocidade;
-	float vento_rajada;
-	float precipitacao;
-	char clima_evento[10];
-	char clima_condicao[15];
+struct dados{
+	char encontro[256];
+	float altura_media;
+	float direcao_pico;
+	float temperatura_mar;
+	float altura_max;
+	float onda_zero;
+	float pico_energia;
 };
-
-
-dado_t * criar_dado (char * tempo, float temperatura,  float vento_frio, float indice_calor, float umidade, float pressao, float condensacao_agua,){
+dado_t * criar_dado (dado_t *temp)
+{
 
 	dado_t * meu_novo_dado = malloc(sizeof(struct dados));
+
 	if (meu_novo_dado == NULL) {
 		perror("Criar dado!\n");
 		exit(-2);
 	}
 
+	strncpy(meu_novo_dado->encontro, temp->encontro, 128);
+	meu_novo_dado->altura_media = temp->altura_media;
+	meu_novo_dado->direcao_pico = temp->direcao_pico;
+	meu_novo_dado->temperatura_mar = temp->temperatura_mar;
+	meu_novo_dado->altura_max = temp->altura_max;
+	meu_novo_dado->onda_zero = temp->onda_zero;
+	meu_novo_dado->pico_energia = temp->pico_energia;
 
-	meu_novo_dado->pressao = pressao;
-
-	strncpy(meu_novo_dado->tempo, tempo, 64);
 	return meu_novo_dado;
 }
 
 
-dado_t **ler_dados(char *dados_METARcsv, int *n_linhas){
-	char tempo[64];
-	int i=0, linhas=0, amostra;
-	float temperatura;
+dado_t **ler_dados(char *CoastalDataSystem, int *n_linhas){
 
-	FILE *fp = fopen(dados_METARcsv,"r");
+	char tempo[256];
+
+	int i=0, linhas = 0;
+
+	FILE *fp = fopen(CoastalDataSystem,"r");
 
 	if (!fp){
 		perror("ler_dados_csv");
 		exit(-1);
 	}
 
+	dado_t temp;
+
 	/* Ignora primeira linha */
-	fgets(tempo,64, fp);
+	fgets(tempo, 256, fp);
 
 	/* Contar todas as linhas: use while e fgets() */
-	while (fgets (tempo,64, fp) != NULL){
+	while (fgets (tempo, 256, fp) != NULL){
 		linhas++;
 	}
 
@@ -74,26 +74,29 @@ dado_t **ler_dados(char *dados_METARcsv, int *n_linhas){
 	}
 	rewind(fp);
 	/* Ignorando a primeira linha */
-	fgets(tempo,64, fp);
-	while (fscanf (fp, "%d,%f,%63[^\n]", &amostra, &temperatura, tempo) == 3){
+	fgets(tempo,256, fp);
+	while(fscanf(fp,"%255[^,], %f, %f, %f, %f, %f, %f\n", temp.encontro,
+			&temp.altura_media, &temp.direcao_pico, &temp.temperatura_mar, &temp.altura_max,
+			&temp.onda_zero, &temp.pico_energia) == 7){
 		/* Cria um novo dado abstrato e armazena a sua referência */
-		dados[i] = criar_dado(amostra, temperatura, tempo);
+		dados[i] = criar_dado(&temp);
 		i++;
 	}
 	*n_linhas = linhas;
+
+	fclose(fp);
 	return dados;
 }
 
-void quick_sort(dado_t **dados, int esq, dir)
+void quick_sort(dado_t **dados, int esq, int dir)
 {
-	dado_t *p;
+	int p;
 
 	if(esq < dir){
 		p = particao(dados, esq, dir);
 		quick_sort(dados, esq, p);
 		quick_sort(dados, p+1, dir);
 	}
-
 }
 int med_tres(dado_t **dados, int esq, int dir)
 {
@@ -101,22 +104,22 @@ int med_tres(dado_t **dados, int esq, int dir)
 
 	med = (esq + dir) / 2;
 
-	if(dados[dir]->pressao < dados[esq]->pressao)
+	if(dados[dir]->direcao_pico < dados[esq]->direcao_pico)
 		swap(dados, esq, dir);
 
-	if(dados[med]->pressao < dados[esq]->pressao)
+	if(dados[med]->direcao_pico < dados[esq]->direcao_pico)
 		swap(dados, med, esq);
 
-	if(dados[dir]->pressao < dados[med]->pressao)
+	if(dados[dir]->direcao_pico < dados[med]->direcao_pico)
 		swap(dados, dir, med);
 
 	return med;
 }
 
-int particao(dado_t **dados, esq, dir)
+int particao(dado_t **dados, int esq, int dir)
 {
 
-	int med = mediana_tres(dados, esq, dir);
+	int med = med_tres(dados, esq, dir);
 	dado_t *pivot = dados[med];
 	int i = esq - 1;
 	int j = dir + 1;
@@ -124,10 +127,10 @@ int particao(dado_t **dados, esq, dir)
 	for(;;){
 		do{
 			i = i + 1;
-		}while(dados[i]->pressao < pivot->pressao);
+		}while(dados[i]->direcao_pico < pivot->direcao_pico);
 		do{
 			j = j - 1;
-		}while(dados[j]->pressao > pivot->pressao);
+		}while(dados[j]->direcao_pico > pivot->direcao_pico);
 
 		if(i >= j)
 			return j;
@@ -135,21 +138,56 @@ int particao(dado_t **dados, esq, dir)
 	}
 	return j;
 }
-int imprime_amostra(dado_t * dados){
-	return (dados->amostra);
+
+void imprime_dados(dado_t **dados)
+{
+	printf("%s, %f, %f, %f, %f, %f, %f\n", imprime_encontro(dados), imprime_altura_media(dados), imprime_direcao_pico(dados),
+			imprime_temperatura_mar(dados), imprime_altura_max(dados), imprime_onda_zero(dados), imprime_pico_energia(dados));
+}
+char * imprime_encontro(dado_t *dados)
+{
+	return (dados->encontro);
 }
 
-float imprime_temperatura(dado_t * dados){
-	return (dados->temperatura);
+float imprime_altura_media(dado_t *dados)
+{
+	return (dados->altura_media);
+}
+float imprime_direcao_pico(dado_t *dados)
+{
+	return (dados->direcao_pico);
 }
 
-char * imprime_tempo(dado_t * dados){
-	return (dados->tempo);
+float imprime_temperatura_mar(dado_t *dados)
+{
+	return (dados->temperatura_mar);
 }
 
-void liberar_dados(dado_t **vetor, int n_linhas){
+float imprime_altura_max(dado_t *dados)
+{
+	return (dados->altura_max);
+}
+
+float imprime_onda_zero(dado_t *dados)
+{
+	return (dados->onda_zero);
+}
+
+float imprime_pico_energia(dado_t *dados)
+{
+	return (dados->pico_energia);
+}
+void swap(dado_t **dados, int i, int j)
+{
+	dado_t *temp = dados[i];
+	dados[i] = dados[j];
+	dados[j] = temp;
+}
+void liberar_dados(dado_t **dados, int n_linhas)
+{
 	int i;
-	for(i=0;i<n_linhas;i++)
-		free(vetor[i]);
-	free(vetor);
+	for(i=0;i<n_linhas;i++){
+		free(dados[i]);
+	}
+	free(dados);
 }

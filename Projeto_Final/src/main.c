@@ -1,32 +1,27 @@
-/*
- ============================================================================
- Name        : main.c
- Author      : Clovis Kuhn e Matheus Cunha
- Version     : 1.0
- Copyright   : Your copyright notice
- Description :Programa que verifica o tempo de ordenação de um arquivo CSV conforme o algoritmo de counting sort:
-  	  	  	  Time,Temp.,Windchill,Heat Index,Humidity,Pressure,Dew Point,Visibility,Wind Dir,Wind Speed,Gust Speed,Precip,Events,Conditions
-  	  	  	  <string>;<float>;<float>;<float>;<float>;<float>;<float>;<float>;<string>;<float>;<float>;<float>;<string>;<string>;
-   	  	  	  <string>;<float>;<float>;<float>;<float>;<float>;<float>;<float>;<string>;<float>;<float>;<float>;<string>;<string>;
- ============================================================================
- */
-
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include <time.h>
+#include <limits.h>
+#include <math.h>
+
 #include "dados.h"
 
+//#define repetir 1
 
-int main(){
-    int i;
+int main()
+{
+	int i = 0;
     int n_linhas = 0;
-    dado_t **dados = ler_dados("dados_METAR.csv", &n_linhas);
+    //volatile int i; // pode mudar
 
-    /* Imprima os dados:
-    for (i=0; i < n_linhas; i++){
-        printf( "%d, %.1f, %s\n", imprime_amostra(dados[i]),imprime_temperatura(dados[i]),imprime_tempo(dados[i]));
-    }*/
+    dado_t **dados = ler_dados("CoastalDataSystem.csv", &n_linhas);
 
-    liberar_dados(dados, n_linhas); //liberação do malloc.
+    for(i=0; i<n_linhas; i++){
+    	imprime_dados(dados[i]);
+    }
 
+    liberar_dados(dados, n_linhas);
+    //fclose(dados);
     return 0;
 }
