@@ -12,13 +12,13 @@
 #include "dados.h"
 
 struct dados{
-	char encontro[256];
+	char encontro[128];
 	float altura_media;
 	float altura_max;
 	float onda_zero;
 	float pico_energia;
 	float direcao_pico;
-	float temperatura_mar;
+	int temperatura_mar;
 };
 
 dado_t * criar_dado (dado_t *temp)
@@ -44,7 +44,7 @@ dado_t * criar_dado (dado_t *temp)
 
 dado_t **ler_dados(char *CoastalDataSystem, int *n_linhas){
 
-	char tempo[256];
+	char tempo[128];
 
 	int i=0, linhas = 0;
 
@@ -58,10 +58,10 @@ dado_t **ler_dados(char *CoastalDataSystem, int *n_linhas){
 	dado_t temp;
 
 	/* Ignora primeira linha */
-	fgets(tempo, 256, fp);
+	fgets(tempo, 128, fp);
 
 	/* Contar todas as linhas: use while e fgets() */
-	while (fgets (tempo, 256, fp) != NULL){
+	while (fgets (tempo, 128, fp) != NULL){
 		linhas++;
 	}
 
@@ -74,10 +74,17 @@ dado_t **ler_dados(char *CoastalDataSystem, int *n_linhas){
 	}
 	rewind(fp);
 	/* Ignorando a primeira linha */
-	fgets(tempo,256, fp);
-	while(fscanf(fp,"%255[^,], %f, %f, %f, %f, %f, %f\n", temp.encontro,
+	fgets(tempo,128, fp);
+
+	float temperatura=0;
+
+	while(fscanf(fp,"%127[^,], %f, %f, %f, %f, %f, %f\n", temp.encontro,
 			&temp.altura_media,  &temp.altura_max,&temp.onda_zero,
-			&temp.pico_energia,&temp.direcao_pico,&temp.temperatura_mar) == 7){
+			&temp.pico_energia,&temp.direcao_pico,&temperatura) == 7){
+
+
+		temp.temperatura_mar = (int)(temperatura*100);
+
 		/* Cria um novo dado abstrato e armazena a sua referência */
 		dados[i] = criar_dado(&temp);
 		i++;
@@ -144,7 +151,7 @@ int maximo(dado_t **dados, int n_linhas){
 	int curr = 0;
 	int max = 0;
 	for(curr = 0; curr < n_linhas; curr++){
-		if(dados[curr]->direcao_pico > max){ max = dados[curr]->direcao_pico; }
+		if(dados[curr]->temperatura_mar > max){ max = dados[curr]->temperatura_mar; }
 	}
 	return max;
 }
@@ -153,18 +160,22 @@ void counting_sort(dado_t **dados, int n_linhas){
 
 	int curr = 0;
 	int max = maximo(dados, n_linhas);
-	dado_t **counting_array = calloc(max, sizeof(struct dados*)); // aloca e zera o vetor
-	for(curr = 0; curr < n_linhas; curr ++){
-		counting_array[(int)dados[curr]->direcao_pico]->direcao_pico++;
+	dado_t **counting_array = calloc(max, sizeof(struct dados*)); // Zeros out the array
+
+	for(curr=0; curr < n_linhas; curr++){
+		counting_array[dados[curr]->temperatura_mar]->temperatura_mar++;
 	}
+
 	int num = 0;
 	curr = 0;
+
 	while(curr <= n_linhas){
-		while(counting_array[num]->direcao_pico > 0){
-			dados[curr]->direcao_pico = num;
-			counting_array[num]->direcao_pico--;
+		while(counting_array[num]->temperatura_mar > 0){
+			dados[curr]->temperatura_mar = num;
+			counting_array[num]->temperatura_mar--;
 			curr++;
-			if(curr > n_linhas){ break; }
+			if(curr > n_linhas)
+				break;
 		}
 		num++;
 	}
@@ -172,7 +183,7 @@ void counting_sort(dado_t **dados, int n_linhas){
 
 void imprime_dados(dado_t *dados)
 {
-	printf("%s, %.2f, %.2f, %.2f, %.2f, %.2f, %.2f\n", imprime_encontro(dados), imprime_altura_media(dados)
+	printf("%s, %.2f, %.2f, %.2f, %.2f, %.2f, %d\n", imprime_encontro(dados), imprime_altura_media(dados)
 			,imprime_altura_max(dados),imprime_onda_zero(dados),imprime_pico_energia(dados),imprime_direcao_pico(dados),imprime_temperatura_mar(dados));
 }
 char * imprime_encontro(dado_t *dados)
@@ -189,7 +200,7 @@ float imprime_direcao_pico(dado_t *dados)
 	return (dados->direcao_pico);
 }
 
-float imprime_temperatura_mar(dado_t *dados)
+int imprime_temperatura_mar(dado_t *dados)
 {
 	return (dados->temperatura_mar);
 }

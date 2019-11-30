@@ -30,7 +30,7 @@ float imprime_altura_media(dado_t *dados);
 
 float imprime_direcao_pico(dado_t *dados);
 
-float imprime_temperatura_mar(dado_t *dados);
+int imprime_temperatura_mar(dado_t *dados);
 
 void imprime_dados(dado_t *dados);
 
