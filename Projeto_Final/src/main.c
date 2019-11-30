@@ -10,10 +10,10 @@ int main()
 {
 	struct timespec t_1;
 	struct timespec t_2;
-	int j, n_linhas;
+	int i, j, n_linhas;
 	long long tempo_nano, tempo_tnano=0;
 	long tempo_seg, tempo_tseg=0;
-	for (j=0; j < 20; j++){
+	for (j=0; j < 1; j++){
 		n_linhas = 0;
 		dado_t **dados = ler_dados("CoastalDataSystem.csv", &n_linhas);
 		clock_gettime(CLOCK_MONOTONIC ,&t_1);
@@ -28,10 +28,13 @@ int main()
 		//printf("Tempo de ordenacao: %lu.%llu segundos\n", tempo_seg, tempo_nano);
 		tempo_tseg = tempo_tseg + tempo_seg;
 		tempo_tnano = tempo_tnano + tempo_nano;
+		/*for (i =0; i < n_linhas; i++){
+			imprime_dados(dados[i]);
+		}*/
 		liberar_dados(dados, n_linhas); //liberação do malloc.
 	}
 	printf("Tempo de ordenacao QUICKSORT: %lu.%llu segundos", (tempo_tseg/20), (tempo_tnano/20));
-	for (j=0; j < 20; j++){
+	for (j=0; j < 1; j++){
 			n_linhas = 0;
 			dado_t **dados = ler_dados("CoastalDataSystem.csv", &n_linhas);
 			clock_gettime(CLOCK_MONOTONIC ,&t_1);
@@ -46,8 +49,11 @@ int main()
 			//printf("Tempo de ordenacao: %lu.%llu segundos\n", tempo_seg, tempo_nano);
 			tempo_tseg = tempo_tseg + tempo_seg;
 			tempo_tnano = tempo_tnano + tempo_nano;
+			for (i =0; i < n_linhas; i++){
+				imprime_dados(dados[i]);
+			}
 			liberar_dados(dados, n_linhas); //liberação do malloc.
 		}
-		printf("Tempo de ordenacao COUNTINGSORT: %lu.%llu segundos", (tempo_tseg/20), (tempo_tnano/20));
+		printf("Tempo de ordenacao COUNTINGSORT: %lu.%llu segundos", (tempo_tseg), (tempo_tnano));
 	return 0;
 }
