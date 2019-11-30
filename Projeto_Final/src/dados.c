@@ -14,11 +14,11 @@
 struct dados{
 	char encontro[256];
 	float altura_media;
-	float direcao_pico;
-	float temperatura_mar;
 	float altura_max;
 	float onda_zero;
 	float pico_energia;
+	float direcao_pico;
+	float temperatura_mar;
 };
 
 dado_t * criar_dado (dado_t *temp)
@@ -33,12 +33,11 @@ dado_t * criar_dado (dado_t *temp)
 
 	strncpy(meu_novo_dado->encontro, temp->encontro, 128);
 	meu_novo_dado->altura_media = temp->altura_media;
-	meu_novo_dado->direcao_pico = temp->direcao_pico;
-	meu_novo_dado->temperatura_mar = temp->temperatura_mar;
 	meu_novo_dado->altura_max = temp->altura_max;
 	meu_novo_dado->onda_zero = temp->onda_zero;
 	meu_novo_dado->pico_energia = temp->pico_energia;
-
+	meu_novo_dado->direcao_pico = temp->direcao_pico;
+	meu_novo_dado->temperatura_mar = temp->temperatura_mar;
 	return meu_novo_dado;
 }
 
@@ -77,8 +76,8 @@ dado_t **ler_dados(char *CoastalDataSystem, int *n_linhas){
 	/* Ignorando a primeira linha */
 	fgets(tempo,256, fp);
 	while(fscanf(fp,"%255[^,], %f, %f, %f, %f, %f, %f\n", temp.encontro,
-			&temp.altura_media, &temp.direcao_pico, &temp.temperatura_mar, &temp.altura_max,
-			&temp.onda_zero, &temp.pico_energia) == 7){
+			&temp.altura_media,  &temp.altura_max,&temp.onda_zero,
+			&temp.pico_energia,&temp.direcao_pico,&temp.temperatura_mar) == 7){
 		/* Cria um novo dado abstrato e armazena a sua referência */
 		dados[i] = criar_dado(&temp);
 		i++;
@@ -105,13 +104,13 @@ int med_tres(dado_t **dados, int esq, int dir)
 
 	med = (esq + dir) / 2;
 
-	if(dados[dir]->direcao_pico < dados[esq]->direcao_pico)
+	if(dados[dir]->temperatura_mar < dados[esq]->temperatura_mar)
 		swap(dados, esq, dir);
 
-	if(dados[med]->direcao_pico < dados[esq]->direcao_pico)
+	if(dados[med]->temperatura_mar < dados[esq]->temperatura_mar)
 		swap(dados, med, esq);
 
-	if(dados[dir]->direcao_pico < dados[med]->direcao_pico)
+	if(dados[dir]->temperatura_mar < dados[med]->temperatura_mar)
 		swap(dados, dir, med);
 
 	return med;
@@ -128,10 +127,10 @@ int particao(dado_t **dados, int esq, int dir)
 	for(;;){
 		do{
 			i = i + 1;
-		}while(dados[i]->direcao_pico < pivot->direcao_pico);
+		}while(dados[i]->temperatura_mar < pivot->temperatura_mar);
 		do{
 			j = j - 1;
-		}while(dados[j]->direcao_pico > pivot->direcao_pico);
+		}while(dados[j]->temperatura_mar > pivot->temperatura_mar);
 
 		if(i >= j)
 			return j;
@@ -156,7 +155,7 @@ void counting_sort(dado_t **dados, int n_linhas){
 	int max = maximo(dados, n_linhas);
 	dado_t **counting_array = calloc(max, sizeof(struct dados*)); // aloca e zera o vetor
 	for(curr = 0; curr < n_linhas; curr ++){
-		counting_array[dados[curr]->]
+		counting_array[(int)dados[curr]->direcao_pico]->direcao_pico++;
 	}
 	int num = 0;
 	curr = 0;
@@ -173,8 +172,8 @@ void counting_sort(dado_t **dados, int n_linhas){
 
 void imprime_dados(dado_t *dados)
 {
-	printf("%s, %.2f, %.2f, %.2f, %.2f, %.2f, %.2f\n", imprime_encontro(dados), imprime_altura_media(dados), imprime_direcao_pico(dados),
-			imprime_temperatura_mar(dados), imprime_altura_max(dados), imprime_onda_zero(dados), imprime_pico_energia(dados));
+	printf("%s, %.2f, %.2f, %.2f, %.2f, %.2f, %.2f\n", imprime_encontro(dados), imprime_altura_media(dados)
+			,imprime_altura_max(dados),imprime_onda_zero(dados),imprime_pico_energia(dados),imprime_direcao_pico(dados),imprime_temperatura_mar(dados));
 }
 char * imprime_encontro(dado_t *dados)
 {
