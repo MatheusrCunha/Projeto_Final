@@ -1,7 +1,7 @@
 /*
  * dados.c
  *
- *  Created on: 12 de nov de 2019
+ *  Created on: 30 de nov de 2019
  *      Author: Matheus e Clovis
  *
  */
@@ -20,6 +20,7 @@ struct dados{
 	float onda_zero;
 	float pico_energia;
 };
+
 dado_t * criar_dado (dado_t *temp)
 {
 
@@ -139,9 +140,40 @@ int particao(dado_t **dados, int esq, int dir)
 	return j;
 }
 
-void imprime_dados(dado_t **dados)
+int maximo(dado_t **dados, int n_linhas){
+
+	int curr = 0;
+	int max = 0;
+	for(curr = 0; curr < n_linhas; curr++){
+		if(dados[curr]->direcao_pico > max){ max = dados[curr]->direcao_pico; }
+	}
+	return max;
+}
+
+void counting_sort(dado_t **dados, int n_linhas){
+
+	int curr = 0;
+	int max = maximo(dados, n_linhas);
+	dado_t **counting_array = calloc(max, sizeof(struct dados*)); // aloca e zera o vetor
+	for(curr = 0; curr < n_linhas; curr ++){
+		counting_array[dados[curr]->]
+	}
+	int num = 0;
+	curr = 0;
+	while(curr <= n_linhas){
+		while(counting_array[num]->direcao_pico > 0){
+			dados[curr]->direcao_pico = num;
+			counting_array[num]->direcao_pico--;
+			curr++;
+			if(curr > n_linhas){ break; }
+		}
+		num++;
+	}
+}
+
+void imprime_dados(dado_t *dados)
 {
-	printf("%s, %f, %f, %f, %f, %f, %f\n", imprime_encontro(dados), imprime_altura_media(dados), imprime_direcao_pico(dados),
+	printf("%s, %.2f, %.2f, %.2f, %.2f, %.2f, %.2f\n", imprime_encontro(dados), imprime_altura_media(dados), imprime_direcao_pico(dados),
 			imprime_temperatura_mar(dados), imprime_altura_max(dados), imprime_onda_zero(dados), imprime_pico_energia(dados));
 }
 char * imprime_encontro(dado_t *dados)

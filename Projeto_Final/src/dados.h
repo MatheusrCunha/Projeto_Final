@@ -32,7 +32,7 @@ float imprime_direcao_pico(dado_t *dados);
 
 float imprime_temperatura_mar(dado_t *dados);
 
-void imprime_dados(dado_t **dados);
+void imprime_dados(dado_t *dados);
 
 float imprime_altura_max(dado_t *dados);
 
@@ -47,6 +47,10 @@ void quick_sort(dado_t **dados, int esq, int dir);
 int med_tres(dado_t **dados, int esq, int dir);
 
 int particao(dado_t **dados, int esq, int dir);
+
+int maximo(dado_t **dados, int n_linhas);
+
+void counting_sort(dado_t **dados, int n_linhas);
 
 void swap(dado_t **dados, int i, int j);
 #endif /* DADOS_H_ */
