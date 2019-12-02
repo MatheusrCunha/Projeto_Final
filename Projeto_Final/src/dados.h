@@ -20,27 +20,21 @@ typedef struct dados dado_t;
   */
 dado_t * criar_dado(dado_t *temp);
 
-dado_t **ler_dados(char *dados_METARcsv, int * n_linhas);
+dado_t **ler_dados(char *bounding_boxes, int * n_linhas);
 
 void liberar_dados(dado_t **dados, int n_linhas);
 
-char * imprime_encontro(dado_t *dados);
-
-float imprime_altura_media(dado_t *dados);
-
-float imprime_direcao_pico(dado_t *dados);
-
-int imprime_temperatura_mar(dado_t *dados);
-
 void imprime_dados(dado_t *dados);
 
-float imprime_altura_max(dado_t *dados);
+int imprime_quadro(dado_t *dados);
 
-float imprime_onda_zero(dado_t *dados);
+float imprime_coordenadax(dado_t *dados);
 
-float imprime_pico_energia(dado_t *dados);
+float imprime_coordenaday(dado_t *dados);
 
-void imprime_dado(dado_t **dados);
+int imprime_comprimento(dado_t *dados);
+
+int imprime_altura(dado_t *dados);
 
 void quick_sort(dado_t **dados, int esq, int dir);
 
