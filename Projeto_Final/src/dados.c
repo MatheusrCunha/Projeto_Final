@@ -12,13 +12,11 @@
 #include "dados.h"
 
 struct dados{
-	char encontro[128];
-	float altura_media;
-	float altura_max;
-	float onda_zero;
-	float pico_energia;
-	float direcao_pico;
-	int temperatura_mar;
+	int quadro;
+	float coordenadax;
+	float coordenaday;
+	int comprimento;
+	int altura;
 };
 
 dado_t * criar_dado (dado_t *temp)
@@ -26,29 +24,29 @@ dado_t * criar_dado (dado_t *temp)
 
 	dado_t * meu_novo_dado = malloc(sizeof(struct dados));
 
-	if (meu_novo_dado == NULL) {
+	if (meu_novo_dado == NULL){
 		perror("Criar dado!\n");
 		exit(-2);
 	}
 
-	strncpy(meu_novo_dado->encontro, temp->encontro, 128);
-	meu_novo_dado->altura_media = temp->altura_media;
-	meu_novo_dado->altura_max = temp->altura_max;
-	meu_novo_dado->onda_zero = temp->onda_zero;
-	meu_novo_dado->pico_energia = temp->pico_energia;
-	meu_novo_dado->direcao_pico = temp->direcao_pico;
-	meu_novo_dado->temperatura_mar = temp->temperatura_mar;
+	//strncpy(meu_novo_dado->quadro, temp->quadro, 1000);
+	meu_novo_dado->quadro = temp->quadro;
+	meu_novo_dado->coordenadax = temp->coordenadax;
+	meu_novo_dado->coordenaday = temp->coordenaday;
+	meu_novo_dado->comprimento = temp->comprimento;
+	meu_novo_dado->altura = temp->altura;
+
 	return meu_novo_dado;
 }
 
 
-dado_t **ler_dados(char *CoastalDataSystem, int *n_linhas){
+dado_t **ler_dados(char *bounding_boxes, int *n_linhas){
 
-	char tempo[128];
+	char texto[64];
 
 	int i=0, linhas = 0;
 
-	FILE *fp = fopen(CoastalDataSystem,"r");
+	FILE *fp = fopen(bounding_boxes,"r");
 
 	if (!fp){
 		perror("ler_dados_csv");
@@ -58,10 +56,10 @@ dado_t **ler_dados(char *CoastalDataSystem, int *n_linhas){
 	dado_t temp;
 
 	/* Ignora primeira linha */
-	fgets(tempo, 128, fp);
+	fgets(texto, 64, fp);
 
 	/* Contar todas as linhas: use while e fgets() */
-	while (fgets (tempo, 128, fp) != NULL){
+	while (fgets (texto, 64, fp) != NULL){
 		linhas++;
 	}
 
@@ -74,17 +72,14 @@ dado_t **ler_dados(char *CoastalDataSystem, int *n_linhas){
 	}
 	rewind(fp);
 	/* Ignorando a primeira linha */
-	fgets(tempo,128, fp);
+	fgets(texto,64, fp);
+	//float temperatura;
+	//while(fscanf(fp,"%255[^,],
 
-	float temperatura=0;
+	while(fscanf(fp,"%d, %f, %f, %d, %d\n", &temp.quadro, &temp.coordenadax,
+			&temp.coordenaday, &temp.comprimento, &temp.altura) == 5){
 
-	while(fscanf(fp,"%127[^,], %f, %f, %f, %f, %f, %f\n", temp.encontro,
-			&temp.altura_media,  &temp.altura_max,&temp.onda_zero,
-			&temp.pico_energia,&temp.direcao_pico,&temperatura) == 7){
-
-
-		temp.temperatura_mar = (int)(temperatura*100);
-
+		//temp.temperatura_mar = (int)(temperatura*100);
 		/* Cria um novo dado abstrato e armazena a sua referência */
 		dados[i] = criar_dado(&temp);
 		i++;
@@ -98,31 +93,30 @@ dado_t **ler_dados(char *CoastalDataSystem, int *n_linhas){
 void quick_sort(dado_t **dados, int esq, int dir)
 {
 	int p;
-
 	if(esq < dir){
 		p = particao(dados, esq, dir);
 		quick_sort(dados, esq, p);
 		quick_sort(dados, p+1, dir);
 	}
 }
+
 int med_tres(dado_t **dados, int esq, int dir)
 {
 	int med;
 
 	med = (esq + dir) / 2;
 
-	if(dados[dir]->temperatura_mar < dados[esq]->temperatura_mar)
+	if(dados[dir]->altura < dados[esq]->altura)
 		swap(dados, esq, dir);
 
-	if(dados[med]->temperatura_mar < dados[esq]->temperatura_mar)
+	if(dados[med]->altura < dados[esq]->altura)
 		swap(dados, med, esq);
 
-	if(dados[dir]->temperatura_mar < dados[med]->temperatura_mar)
+	if(dados[dir]->altura < dados[med]->altura)
 		swap(dados, dir, med);
 
 	return med;
 }
-
 int particao(dado_t **dados, int esq, int dir)
 {
 
@@ -134,10 +128,10 @@ int particao(dado_t **dados, int esq, int dir)
 	for(;;){
 		do{
 			i = i + 1;
-		}while(dados[i]->temperatura_mar < pivot->temperatura_mar);
+		}while(dados[i]->altura < pivot->altura);
 		do{
 			j = j - 1;
-		}while(dados[j]->temperatura_mar > pivot->temperatura_mar);
+		}while(dados[j]->altura > pivot->altura);
 
 		if(i >= j)
 			return j;
@@ -145,79 +139,96 @@ int particao(dado_t **dados, int esq, int dir)
 	}
 	return j;
 }
-
 int maximo(dado_t **dados, int n_linhas){
 
-	int curr = 0;
+	int i = 0;
 	int max = 0;
-	for(curr = 0; curr < n_linhas; curr++){
-		if(dados[curr]->temperatura_mar > max){ max = dados[curr]->temperatura_mar; }
+	for(i = 0; i < n_linhas; i++){
+		if(dados[i]->altura > max){
+			max = dados[i]->altura;
+		}
 	}
 	return max;
 }
 
-void counting_sort(dado_t **dados, int n_linhas){
+void counting_sort(dado_t **dados, int n_linhas)
+{
+	int i, j, max;
+	max = maximo(dados,n_linhas);
 
-	int curr = 0;
-	int max = maximo(dados, n_linhas);
-	dado_t **counting_array = calloc(max, sizeof(struct dados*)); // Zeros out the array
+	int *count = calloc(max+1, sizeof(int));
+	dado_t **output = malloc(sizeof(struct dados*) * n_linhas);
 
-	for(curr=0; curr < n_linhas; curr++){
-		counting_array[dados[curr]->temperatura_mar]->temperatura_mar++;
+	// Store count of each character
+	for(j = 0; j < n_linhas; j++)
+		++count[dados[j]->altura];
+
+	for (i = 1; i <= max; i++)
+		count[i]= count[i] + count[i-1];
+
+	// Build the output array
+	for (j = n_linhas-1; j >= 0; j--)
+	{
+
+		printf("%d %d %d\n", j, dados[j]->altura,count[dados[j]->altura]-1 );
+		fflush(stdout);
+
+
+		output[count[dados[j]->altura]-1] = dados[j];
+		--count[dados[j]->altura];
 	}
 
-	int num = 0;
-	curr = 0;
 
-	while(curr <= n_linhas){
-		while(counting_array[num]->temperatura_mar > 0){
-			dados[curr]->temperatura_mar = num;
-			counting_array[num]->temperatura_mar--;
-			curr++;
-			if(curr > n_linhas)
-				break;
-		}
-		num++;
+		puts("--------------------");
+
+	/*
+     For Stable algorithm
+     for (i = sizeof(arr)-1; i>=0; --i)
+    {
+        output[count[arr[i]]-1] = arr[i];
+        --count[arr[i]];
+    }
+
+    For Logic : See implementation
+	 */
+
+	// Copy the output array to arr, so that arr now
+	// contains sorted characters
+	for (i = 0; i < n_linhas; ++i){
+		dados[i] = output[i];
+
+		printf("%d %d\n", i, output[i]->altura);
+		fflush(stdout);
 	}
 }
 
 void imprime_dados(dado_t *dados)
 {
-	printf("%s, %.2f, %.2f, %.2f, %.2f, %.2f, %d\n", imprime_encontro(dados), imprime_altura_media(dados)
-			,imprime_altura_max(dados),imprime_onda_zero(dados),imprime_pico_energia(dados),imprime_direcao_pico(dados),imprime_temperatura_mar(dados));
+	printf("%d, %.2f, %.2f, %d, %d\n", imprime_quadro(dados), imprime_coordenadax(dados),
+			imprime_coordenaday(dados), imprime_comprimento(dados),imprime_altura(dados));
 }
-char * imprime_encontro(dado_t *dados)
+int imprime_quadro(dado_t *dados)
 {
-	return (dados->encontro);
-}
-
-float imprime_altura_media(dado_t *dados)
-{
-	return (dados->altura_media);
-}
-float imprime_direcao_pico(dado_t *dados)
-{
-	return (dados->direcao_pico);
+	return (dados->quadro);
 }
 
-int imprime_temperatura_mar(dado_t *dados)
+float imprime_coordenadax(dado_t *dados)
 {
-	return (dados->temperatura_mar);
+	return (dados->coordenadax);
+}
+float imprime_coordenaday(dado_t *dados)
+{
+	return (dados->coordenaday);
 }
 
-float imprime_altura_max(dado_t *dados)
+int imprime_comprimento(dado_t *dados)
 {
-	return (dados->altura_max);
+	return (dados->comprimento);
 }
 
-float imprime_onda_zero(dado_t *dados)
+int imprime_altura(dado_t *dados)
 {
-	return (dados->onda_zero);
-}
-
-float imprime_pico_energia(dado_t *dados)
-{
-	return (dados->pico_energia);
+	return (dados->altura);
 }
 void swap(dado_t **dados, int i, int j)
 {
