@@ -4,8 +4,8 @@
  Author      : Clovis Kuhn e Matheus Rodrigues da Cunha
  Version     : 1.0
  Copyright   : Your copyright notice
- Description :Programa que exibe na tela o tempo de ordena��o de um arquivo csv:
- 	 	 	  Implementa��o de Quicksort e Counting Sort para compara��o.
+ Description :Programa que exibe na tela o tempo de ordenação de um arquivo csv:
+ 	 	 	  Implementação de Quicksort e Counting Sort para comparação.
  ============================================================================
  */
 
@@ -37,7 +37,7 @@ int main(){
 		//printf("Tempo de ordenacao: %lu.%llu segundos\n", tempo_seg, tempo_nano);
 		tempo_tseg = tempo_tseg + tempo_seg;
 		tempo_tnano = tempo_tnano + tempo_nano;
-		liberar_dados(dados, n_linhas); //libera��o do malloc.
+		liberar_dados(dados, n_linhas); //liberação do malloc.
 	}
 	printf("Tempo de ordenacao Quicksort: %lu.%llu segundos\n", (tempo_tseg/20), (tempo_tnano/20));
 	tempo_tseg=0;
@@ -57,7 +57,7 @@ int main(){
 			//printf("Tempo de ordenacao: %lu.%llu segundos\n", tempo_seg, tempo_nano);
 			tempo_tseg = tempo_tseg + tempo_seg;
 			tempo_tnano = tempo_tnano + tempo_nano;
-			liberar_dados(dados, n_linhas); //libera��o do malloc.
+			liberar_dados(dados, n_linhas); //liberação do malloc.
 		}
 		printf("Tempo de ordenacao Counting Sort: %lu.%llu segundos", (tempo_tseg/20), (tempo_tnano/20));
 	return 0;
