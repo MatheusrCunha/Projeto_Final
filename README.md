@@ -13,5 +13,7 @@
 ![Representação do Algortimo](http://www.dsc.ufcg.edu.br/~abrantes/CursosAnteriores/ATAL2002/ATAL02_arquivos/Aula6/img46.png)
 <p> A análise desse algortimo segue de seguinte forma, no primeito laço e no terceito laço o tempo de ordenação é dado por O(K), já o segundo e o quarto laço corresponde a O(n)
     
-<http://www.dsc.ufcg.edu.br/~abrantes/CursosAnteriores/ATAL2002/ATAL02_arquivos/Aula6/>
-<https://www.markdownguide.org/basic-syntax/>
+
+
+<[1]: http://www.dsc.ufcg.edu.br/~abrantes/CursosAnteriores/ATAL2002/ATAL02_arquivos/Aula6/>
+<[2]: https://www.markdownguide.org/basic-syntax/>
