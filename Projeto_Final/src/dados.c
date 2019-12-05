@@ -1,7 +1,7 @@
 /*
  * dados.c
  *
- *  Created on: 30 de nov de 2019
+ *  Created on: 4 de dezembro de 2019
  *      Author: Matheus e Clovis
  *
  */
@@ -12,7 +12,7 @@
 #include "dados.h"
 
 struct dados{
-    int quadro;
+	int quadro;
 	float coordenadax;
 	float coordenaday;
 	int comprimento;
@@ -63,8 +63,8 @@ dado_t **ler_dados(char *bounding_boxes, int *n_linhas){
 		linhas++;
 	}
 
-	/* Alocando mem�ria:
-	 * Agora � um vetor de ponteiros */
+	/* Alocando memória:
+	 * Agora é um vetor de ponteiros */
 	dado_t **dados = malloc(sizeof(struct dados*) * linhas);
 	if (dados == NULL) {
 		perror("ler dados!\n");
@@ -77,10 +77,10 @@ dado_t **ler_dados(char *bounding_boxes, int *n_linhas){
 	//while(fscanf(fp,"%255[^,],
 
 	while(fscanf(fp,"%d, %f, %f, %d, %d\n", &temp.quadro, &temp.coordenadax,
-              &temp.coordenaday, &temp.comprimento, &temp.altura) == 5){
+			&temp.coordenaday, &temp.comprimento, &temp.altura) == 5){
 
 		//temp.temperatura_mar = (int)(temperatura*100);
-		/* Cria um novo dado abstrato e armazena a sua refer�ncia */
+		/* Cria um novo dado abstrato e armazena a sua referência */
 		dados[i] = criar_dado(&temp);
 		i++;
 	}
@@ -139,45 +139,68 @@ int particao(dado_t **dados, int esq, int dir)
 	}
 	return j;
 }
-/*int maximo(dado_t **dados, int n_linhas){
+int maximo(dado_t **dados, int n_linhas){
 
-	int curr = 0;
+	int i = 0;
 	int max = 0;
-	for(curr = 0; curr < n_linhas; curr++){
-		if(dados[curr]->altura > max){
-			max = dados[curr]->altura;
+	for(i = 0; i < n_linhas; i++){
+		if(dados[i]->altura > max){
+			max = dados[i]->altura;
 		}
 	}
 	return max;
 }
-*/
+
 void counting_sort(dado_t **dados, int n_linhas)
 {
-    int i, j;
-    dado_t **temp = malloc(sizeof(struct dados*) * 480);
-    dado_t **temp2 = malloc(sizeof(struct dados*) * n_linhas);
+	int i, j, max;
+	max = maximo(dados,n_linhas);
 
-    for(i=0;i<480;i++){
-        temp[i]->altura = 0;
+	//Inicializa o vetor de contagem em zero.
+	int *count = calloc(max+1, sizeof(int));
+	dado_t **output = malloc(sizeof(struct dados*) * n_linhas);
+
+	// Armazena a contagem de cada elemento
+	for(j = 0; j < n_linhas; j++)
+		++count[dados[j]->altura];
+
+	for (i = 1; i <= max; i++)
+		count[i]= count[i] + count[i-1];
+
+	// Construindo o Vetor de saída
+	for (j = n_linhas-1; j >= 0; j--)
+	{
+
+		//printf("%d %d %d\n", j, dados[j]->altura,count[dados[j]->altura]-1 );
+		//fflush(stdout);
+		output[count[dados[j]->altura]-1] = dados[j];
+		--count[dados[j]->altura];
+	}
+	/*
+     Algoritmo para a estabilidade
+     for (i = sizeof(arr)-1; i>=0; --i)
+    {
+        output[count[arr[i]]-1] = arr[i];
+        --count[arr[i]];
     }
 
-    for(j=1;j<n_linhas;j++)
-        temp[dados[i]->altura] = temp[dados[j]->altura] + 1;
+    For Logic : See implementation
+	 */
 
-    for(i=0, i=0; j<480; j++)
-        temp[i]->altura = temp[i]->altura + temp[i-1]->altura;
+	// Copia o vetor de saída para o vetor de dados
+	// Agora os elementos estão sortidos e ordenados
+	for (i = 0; i < n_linhas; ++i){
+		dados[i] = output[i];
 
-    for(i=n_linhas; n_linhas>1;n_linhas--){
-        temp2[temp[dados[j]->altura]] = dados[j]->altura;
-        temp[dados[i]->altura] = temp[dados[i]->altura] - 1;
-    }
-
+		//printf("%d %d\n", i, output[i]->altura);
+		//fflush(stdout);
+	}
 }
 
 void imprime_dados(dado_t *dados)
 {
 	printf("%d, %.2f, %.2f, %d, %d\n", imprime_quadro(dados), imprime_coordenadax(dados),
-         imprime_coordenaday(dados), imprime_comprimento(dados),imprime_altura(dados));
+			imprime_coordenaday(dados), imprime_comprimento(dados),imprime_altura(dados));
 }
 int imprime_quadro(dado_t *dados)
 {

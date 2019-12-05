@@ -1,14 +1,14 @@
 /*
  * dados.h
  *
- *  Created on: 12 de nov de 2019
+ *  Created on: 4 de dez de 2019
  *      Author: Matheus e Clovis
  */
 
 #ifndef DADOS_H_
 #define DADOS_H_
 
-/* Criação de tipo abstrato dado_t */
+/* CriaÃ§Ã£o de tipo abstrato dado_t */
 typedef struct dados dado_t;
 /**
   * @brief  Cria um novo dado
@@ -42,9 +42,10 @@ int med_tres(dado_t **dados, int esq, int dir);
 
 int particao(dado_t **dados, int esq, int dir);
 
-int maximo(dado_t **dados, int n_linhas);
-
 void counting_sort(dado_t **dados, int n_linhas);
 
+int maximo(dado_t **dados, int n_linhas);
+
 void swap(dado_t **dados, int i, int j);
+
 #endif /* DADOS_H_ */
