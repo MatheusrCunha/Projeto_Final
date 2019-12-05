@@ -1,7 +1,7 @@
 /*
  * dados.c
  *
- *  Created on: 30 de nov de 2019
+ *  Created on: 4 de dezembro de 2019
  *      Author: Matheus e Clovis
  *
  */
@@ -156,33 +156,28 @@ void counting_sort(dado_t **dados, int n_linhas)
 	int i, j, max;
 	max = maximo(dados,n_linhas);
 
+	//Inicializa o vetor de contagem em zero.
 	int *count = calloc(max+1, sizeof(int));
 	dado_t **output = malloc(sizeof(struct dados*) * n_linhas);
 
-	// Store count of each character
+	// Armazena a contagem de cada elemento
 	for(j = 0; j < n_linhas; j++)
 		++count[dados[j]->altura];
 
 	for (i = 1; i <= max; i++)
 		count[i]= count[i] + count[i-1];
 
-	// Build the output array
+	// Construindo o Vetor de saída
 	for (j = n_linhas-1; j >= 0; j--)
 	{
 
-		printf("%d %d %d\n", j, dados[j]->altura,count[dados[j]->altura]-1 );
-		fflush(stdout);
-
-
+		//printf("%d %d %d\n", j, dados[j]->altura,count[dados[j]->altura]-1 );
+		//fflush(stdout);
 		output[count[dados[j]->altura]-1] = dados[j];
 		--count[dados[j]->altura];
 	}
-
-
-		puts("--------------------");
-
 	/*
-     For Stable algorithm
+     Algoritmo para a estabilidade
      for (i = sizeof(arr)-1; i>=0; --i)
     {
         output[count[arr[i]]-1] = arr[i];
@@ -192,13 +187,13 @@ void counting_sort(dado_t **dados, int n_linhas)
     For Logic : See implementation
 	 */
 
-	// Copy the output array to arr, so that arr now
-	// contains sorted characters
+	// Copia o vetor de saída para o vetor de dados
+	// Agora os elementos estão sortidos e ordenados
 	for (i = 0; i < n_linhas; ++i){
 		dados[i] = output[i];
 
-		printf("%d %d\n", i, output[i]->altura);
-		fflush(stdout);
+		//printf("%d %d\n", i, output[i]->altura);
+		//fflush(stdout);
 	}
 }
 
