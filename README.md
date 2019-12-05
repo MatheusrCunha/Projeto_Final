@@ -1,2 +1,4 @@
 # Projeto_Final
-# Linguagem C
+## Alunos: Matheus Rodrigues e Clóvis Kuhn
+
+## Ordenação Counting Sort
