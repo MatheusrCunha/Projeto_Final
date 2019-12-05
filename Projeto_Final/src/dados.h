@@ -8,7 +8,7 @@
 #ifndef DADOS_H_
 #define DADOS_H_
 
-/* Criação de tipo abstrato dado_t */
+/* CriaÃ§Ã£o de tipo abstrato dado_t */
 typedef struct dados dado_t;
 /**
   * @brief  Cria um novo dado

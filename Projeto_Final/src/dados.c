@@ -63,8 +63,8 @@ dado_t **ler_dados(char *bounding_boxes, int *n_linhas){
 		linhas++;
 	}
 
-	/* Alocando memória:
-	 * Agora é um vetor de ponteiros */
+	/* Alocando memÃ³ria:
+	 * Agora Ã© um vetor de ponteiros */
 	dado_t **dados = malloc(sizeof(struct dados*) * linhas);
 	if (dados == NULL) {
 		perror("ler dados!\n");
@@ -80,7 +80,7 @@ dado_t **ler_dados(char *bounding_boxes, int *n_linhas){
 			&temp.coordenaday, &temp.comprimento, &temp.altura) == 5){
 
 		//temp.temperatura_mar = (int)(temperatura*100);
-		/* Cria um novo dado abstrato e armazena a sua referência */
+		/* Cria um novo dado abstrato e armazena a sua referÃªncia */
 		dados[i] = criar_dado(&temp);
 		i++;
 	}
@@ -167,7 +167,7 @@ void counting_sort(dado_t **dados, int n_linhas)
 	for (i = 1; i <= max; i++)
 		count[i]= count[i] + count[i-1];
 
-	// Construindo o Vetor de saída
+	// Construindo o Vetor de saÃ­da
 	for (j = n_linhas-1; j >= 0; j--)
 	{
 
@@ -187,8 +187,8 @@ void counting_sort(dado_t **dados, int n_linhas)
     For Logic : See implementation
 	 */
 
-	// Copia o vetor de saída para o vetor de dados
-	// Agora os elementos estão sortidos e ordenados
+	// Copia o vetor de saÃ­da para o vetor de dados
+	// Agora os elementos estÃ£o sortidos e ordenados
 	for (i = 0; i < n_linhas; ++i){
 		dados[i] = output[i];
 
