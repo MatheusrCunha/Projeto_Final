@@ -21,8 +21,7 @@
 </>
 
 ![Representação do Algortmo](http://www.dsc.ufcg.edu.br/~abrantes/CursosAnteriores/ATAL2002/ATAL02_arquivos/Aula6/img46.png)
-<p> A análise desse algortimo segue da seguinte forma, no primeito laço e no segundo laço o tempo de ordenação é dado por O(K), já o terceiro leva O(n), no fim o ultomo laço leva O(n).<br/>
-No fim todo algoritmo possui um tempo de ordenação de O(n).
+<p> A análise desse algortimo segue da seguinte forma, no primeiro laço e no segundo laço o tempo de ordenação é dado por O(K). já o terceiro leva leva O(n), no fim o ultomo laço leva O(n). No fim todo algoritmo possui um tempo de ordenação de O(n).
     Um ponto positivo dessa ordenação é ela ser estável, pois os elementos do vetor de entrada aparecem na mesma ordem no vetor de saída.
 </br>
     
